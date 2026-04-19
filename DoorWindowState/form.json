@@ -5,14 +5,8 @@
             "name": "Mode",
             "caption": "Betriebsmodus",
             "options": [
-                {
-                    "caption": "AUF / ZU",
-                    "value": 0
-                },
-                {
-                    "caption": "AUF / GEKIPPT / ZU",
-                    "value": 1
-                }
+                { "caption": "AUF / ZU", "value": 0 },
+                { "caption": "AUF / GEKIPPT / ZU", "value": 1 }
             ]
         },
         {
@@ -28,6 +22,11 @@
             "type": "SelectVariable",
             "name": "SensorBottom",
             "caption": "Sensor Unten"
+        },
+        {
+            "type": "SelectVariable",
+            "name": "SensorHandle",
+            "caption": "Griffposition"
         }
     ]
 }
