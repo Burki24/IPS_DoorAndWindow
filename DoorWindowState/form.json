@@ -1,5 +1,33 @@
 {
-    "elements": [],
-    "actions": [],
-    "status": []
+    "elements": [
+        {
+            "type": "Select",
+            "name": "Mode",
+            "caption": "Betriebsmodus",
+            "options": [
+                {
+                    "caption": "AUF / ZU",
+                    "value": 0
+                },
+                {
+                    "caption": "AUF / GEKIPPT / ZU",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "type": "Label",
+            "caption": "Sensoren"
+        },
+        {
+            "type": "SelectVariable",
+            "name": "SensorTop",
+            "caption": "Sensor Oben"
+        },
+        {
+            "type": "SelectVariable",
+            "name": "SensorBottom",
+            "caption": "Sensor Unten"
+        }
+    ]
 }
