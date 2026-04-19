@@ -264,22 +264,60 @@ class DoorWindowState extends IPSModuleStrict
 
     private function MapHandlePosition(string $value): ?int
     {
+        $value = strtolower(trim($value));
+    
+        // Normalisierte Mapping-Tabelle
         $map = [
+    
+            // 🔴 Geschlossen
             'down' => 0,
             'runter' => 0,
+            'closed' => 0,
+            'close' => 0,
+            'zu' => 0,
+            'geschlossen' => 0,
+            '0' => 0,
+            'false' => 0,
     
+            // 🟡 Gekippt
             'up' => 1,
             'rauf' => 1,
+            'tilt' => 1,
+            'tilted' => 1,
+            'kippen' => 1,
+            'gekippt' => 1,
+            'ventilation' => 1,
     
+            // 🟢 Offen
             'left' => 2,
             'links' => 2,
-    
-            'right' => 3,
-            'rechts' => 3
+            'right' => 2,
+            'rechts' => 2,
+            'open' => 2,
+            'opening' => 2,
+            'offen' => 2,
+            'opened' => 2,
+            'true' => 2,
+            '1' => 2
         ];
     
-        $key = strtolower(trim($value));
+        if (isset($map[$value])) {
+            return $map[$value];
+        }
     
-        return $map[$key] ?? null;
+        // Fallback: Teilstring-Erkennung (sehr wichtig!)
+        if (strpos($value, 'tilt') !== false || strpos($value, 'kipp') !== false) {
+            return 1;
+        }
+    
+        if (strpos($value, 'open') !== false || strpos($value, 'offen') !== false) {
+            return 2;
+        }
+    
+        if (strpos($value, 'close') !== false || strpos($value, 'zu') !== false) {
+            return 0;
+        }
+    
+        return null;
     }
 }
