@@ -8,7 +8,6 @@ require_once __DIR__ . '/../libs/VariableProfileHelper.php';
 
 class DoorWindowState extends IPSModuleStrict
 {
-    use VariableHelper;
     use VariableProfileHelper;
     
     // Modes
