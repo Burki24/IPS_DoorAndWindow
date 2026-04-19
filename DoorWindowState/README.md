@@ -28,9 +28,10 @@ Ermittelt den Zustand von Fenstern und Türen anhand von mehreren Sensoren und o
   * `~Window`
   * `~Window.Reversed`
 * Konfigurierbares Verhalten der Griffauswertung:
-  * Ignorieren
-  * Überschreiben
-  * Verfeinern (empfohlen)
+  * **Ignorieren** – Die Griffposition wird nicht berücksichtigt, der Zustand wird ausschließlich über die Sensoren ermittelt
+  * **Überschreiben** – Die Griffposition bestimmt den Zustand vollständig, unabhängig von den Sensorwerten
+  * **Verfeinern (empfohlen)** – Die Sensoren bestimmen den Grundzustand, die Griffposition kann diesen sinnvoll erweitern (z. B. von gekippt zu offen).
+  * Die Einstellung "Verfeinern" bietet in den meisten Fällen die realistischste Abbildung des tatsächlichen Fensterzustands.
 * Automatische Erstellung der benötigten Variablen und Profile
 * Debug-Ausgaben zur Analyse und Fehlerbehebung
 
@@ -46,3 +47,71 @@ Ermittelt den Zustand von Fenstern und Türen anhand von mehreren Sensoren und o
 
 * Über den Module Store das 'DoorWindowState'-Modul installieren.
 * Alternativ über das Module Control folgende URL hinzufügen:
+  https://github.com/Burki24/IPS_DoorAndWindow
+  
+---
+
+### 4. Einrichten der Instanzen in Symcon
+
+Unter 'Instanz hinzufügen' kann das 'DoorWindowState'-Modul mithilfe des Schnellfilters gefunden werden.
+
+- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
+
+---
+
+__Konfigurationsseite__:
+
+Name            | Beschreibung
+--------------- | ------------------
+Betriebsmodus   | Auswahl zwischen "AUF/ZU" und "AUF/GEKIPPT/ZU"
+Sensor Oben     | Sensor für oberen Fensterkontakt
+Sensor Unten    | Sensor für unteren Fensterkontakt
+Griffposition   | Optionaler Sensor für die Griffstellung (String/Enum)
+Griff-Verhalten | Steuerung der Griffauswertung (Ignorieren, Überschreiben, Verfeinern)
+
+---
+
+### 5. Statusvariablen und Profile
+
+Die Statusvariablen werden automatisch angelegt. Das Löschen einzelner Variablen kann zu Fehlfunktionen führen.
+
+---
+
+#### Statusvariablen
+
+Name             | Typ     | Beschreibung
+---------------- | ------- | ------------
+Open             | Boolean | Zeigt an, ob das Fenster geschlossen ist (`false`) oder geöffnet (`true`) – verwendet das Profil `~Window.Reversed`
+State            | Integer | Fensterstatus (nur im erweiterten Modus aktiv)
+HandlePosition   | Integer | Erkannte Griffposition (optional)
+
+---
+
+#### Profile
+
+Name                 | Typ
+-------------------- | -------
+DWS.State            | Integer (0 = Geschlossen, 1 = Gekippt, 2 = Offen)
+DWS.HandlePosition   | Integer (0 = Unten, 1 = Oben, 2 = Links, 3 = Rechts)
+
+---
+
+### 6. Visualisierung
+
+Das Modul stellt folgende Werte für die Visualisierung bereit:
+
+* Boolean-Anzeige für offenen/geschlossenen Zustand
+* Farbliche Darstellung des Zustands über das Profil `DWS.State`
+* Optionale Anzeige der Griffposition
+
+Die Darstellung kann direkt im WebFront genutzt oder in eigene Visualisierungen integriert werden.
+
+---
+
+### 7. PHP-Befehlsreferenz
+
+Aktuell stellt das Modul keine direkten PHP-Funktionen zur Verfügung.
+
+Die Nutzung erfolgt vollständig über die Instanzkonfiguration und die automatisch erzeugten Variablen.
+
+---
