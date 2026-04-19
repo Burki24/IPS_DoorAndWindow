@@ -1,7 +1,5 @@
 # DoorWindowState
 
-# DoorWindowState
-
 Symcon Modul zur intelligenten Ermittlung des Fenster- und Türstatus basierend auf mehreren Sensoren und optionaler Griffposition.
 
 [![Symcon PHP SDK](https://img.shields.io/badge/Symcon-PHP%20Modul-orange)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
