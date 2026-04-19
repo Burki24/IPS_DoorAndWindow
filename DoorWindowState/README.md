@@ -7,6 +7,7 @@ Symcon Modul zur intelligenten Ermittlung des Fenster- und Türstatus basierend 
 ![Symcon](https://img.shields.io/badge/Symcon-7.1+-green.svg)
 ![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 ---
 
 ### Inhaltsverzeichnis
