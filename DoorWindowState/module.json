@@ -1,0 +1,13 @@
+{
+    "id": "{8CD3AF2C-4E32-44E4-B386-ECE3F93A9233}",
+    "name": "DoorWindowState",
+    "type": 3,
+    "vendor": "Burki24",
+    "aliases": [
+        "Door/Window State"
+    ],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "DWS"
+}

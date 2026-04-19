@@ -1,0 +1,45 @@
+{
+    "elements": [
+        {
+            "type": "List",
+            "name": "Sensors",
+            "caption": "Sensors",
+            "rowCount": 6,
+            "columns": [
+                {
+                    "caption": "Variable ID",
+                    "name": "VariableID",
+                    "width": "120px",
+                    "add": 0,
+                    "edit": {
+                        "type": "NumberSpinner"
+                    }
+                },
+                {
+                    "caption": "Open Value",
+                    "name": "OpenValue",
+                    "width": "120px",
+                    "add": "1",
+                    "edit": {
+                        "type": "ValidationTextBox"
+                    }
+                },
+                {
+                    "caption": "Enabled",
+                    "name": "Enabled",
+                    "width": "80px",
+                    "add": true,
+                    "edit": {
+                        "type": "CheckBox"
+                    }
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Label",
+            "caption": "State mapping: 0 = Unknown, 1 = Closed, 2 = Open"
+        }
+    ]
+}
