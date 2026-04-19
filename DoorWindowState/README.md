@@ -1,5 +1,7 @@
 # DoorWindowState
-Beschreibung des Moduls.
+Ermittelt den Zustand von Fenstern und Türen anhand von mehreren Sensoren und optional einer Griffposition.
+
+---
 
 ### Inhaltsverzeichnis
 
@@ -8,60 +10,39 @@ Beschreibung des Moduls.
 3. [Software-Installation](#3-software-installation)
 4. [Einrichten der Instanzen in Symcon](#4-einrichten-der-instanzen-in-symcon)
 5. [Statusvariablen und Profile](#5-statusvariablen-und-profile)
-6. [WebFront](#6-webfront)
+6. [Visualisierung](#6-visualisierung)
 7. [PHP-Befehlsreferenz](#7-php-befehlsreferenz)
+
+---
 
 ### 1. Funktionsumfang
 
-*
+* Ermittlung des Fenster-/Türstatus anhand von zwei Sensoren (oben / unten)
+* Unterstützung folgender Zustände:
+  * Geschlossen
+  * Gekippt
+  * Offen
+* Optional: Integration einer Griffposition (z. B. Zigbee2MQTT)
+* Automatische Umwandlung von String-Werten (Enum) in Integer-Zustände
+* Unterstützung von Sensoren mit Profil:
+  * `~Window`
+  * `~Window.Reversed`
+* Konfigurierbares Verhalten der Griffauswertung:
+  * Ignorieren
+  * Überschreiben
+  * Verfeinern (empfohlen)
+* Automatische Erstellung der benötigten Variablen und Profile
+* Debug-Ausgaben zur Analyse und Fehlerbehebung
+
+---
 
 ### 2. Voraussetzungen
 
 - Symcon ab Version 7.1
 
+---
+
 ### 3. Software-Installation
 
 * Über den Module Store das 'DoorWindowState'-Modul installieren.
-* Alternativ über das Module Control folgende URL hinzufügen
-
-### 4. Einrichten der Instanzen in Symcon
-
- Unter 'Instanz hinzufügen' kann das 'DoorWindowState'-Modul mithilfe des Schnellfilters gefunden werden.  
-	- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
-
-__Konfigurationsseite__:
-
-Name     | Beschreibung
--------- | ------------------
-         |
-         |
-
-### 5. Statusvariablen und Profile
-
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
-
-#### Statusvariablen
-
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
-
-#### Profile
-
-Name   | Typ
------- | -------
-       |
-       |
-
-### 6. Visualisierung
-
-Die Funktionalität, die das Modul in der Visualisierung bietet.
-
-### 7. PHP-Befehlsreferenz
-
-`boolean DWS_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
-
-Beispiel:
-`DWS_BeispielFunktion(12345);`
+* Alternativ über das Module Control folgende URL hinzufügen:
