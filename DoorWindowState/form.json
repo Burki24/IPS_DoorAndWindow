@@ -24,6 +24,10 @@
             "caption": "Sensor Unten"
         },
         {
+            "type": "Label",
+            "caption": "Griff (optional)"
+        }
+        {
             "type": "SelectVariable",
             "name": "SensorHandle",
             "caption": "Griffposition"
