@@ -1,0 +1,12 @@
+{
+    "id": "{99D3C0D7-BCEF-1703-021C-A0C2A68C1BB4}",
+    "name": "DoorAndWindow",
+    "author": "Burkhard Kneiseler",
+    "url": "https://github.com/Burki24/IPS_DoorAndWindow",
+    "compatibility": {
+        "version": "7.1"
+    },
+    "version": "1.0",
+    "build": 0,
+    "date": 0
+}
