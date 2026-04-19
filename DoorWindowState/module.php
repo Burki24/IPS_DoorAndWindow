@@ -23,6 +23,7 @@ class DoorWindowState extends IPSModuleStrict
         $this->RegisterPropertyInteger('SensorTop', 0);
         $this->RegisterPropertyInteger('SensorBottom', 0);
         $this->RegisterPropertyInteger('SensorHandle', 0);
+        $this->RegisterPropertyInteger('HandleMode', 2);
     }
 
     public function ApplyChanges(): void
