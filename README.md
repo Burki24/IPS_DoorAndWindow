@@ -1,1 +1,1 @@
-# IPS_DoorWindowState
+# IPS_DoorAndWindow
