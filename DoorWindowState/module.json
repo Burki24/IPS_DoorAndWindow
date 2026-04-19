@@ -3,7 +3,10 @@
     "name": "DoorWindowState",
     "type": 3,
     "vendor": "Burki24",
-    "aliases": [],
+    "aliases": [
+    "Door & Window State",
+    "Fenster- & Türstatus"
+    ],
     "parentRequirements": [],
     "childRequirements": [],
     "implemented": [],
