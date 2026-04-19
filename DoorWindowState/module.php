@@ -136,131 +136,120 @@ class DoorWindowState extends IPSModuleStrict
         }
     }
 
-    private function UpdateState(): void
-    {
-        $this->SendDebug(__FUNCTION__, 'Start UpdateState', 0);
-    
-        $topID = $this->ReadPropertyInteger('SensorTop');
-        $bottomID = $this->ReadPropertyInteger('SensorBottom');
-        $handleID = $this->ReadPropertyInteger('SensorHandle');
-    
-        if (!@IPS_VariableExists($topID) || !@IPS_VariableExists($bottomID)) {
-            $this->SendDebug('Error', 'Sensor nicht vorhanden', 0);
-            return;
-        }
-    
-        $top = SensorHelper::GetState($topID);
-        $bottom = SensorHelper::GetState($bottomID);
-    
-        if ($top === null || $bottom === null) {
-            $this->SendDebug('Error', 'Sensor liefert NULL', 0);
-            return;
-        }
-    
-        $this->SendDebug(
-            'SensorValues',
-            json_encode([
-                'TopID' => $topID,
-                'BottomID' => $bottomID,
-                'Top' => $top,
-                'Bottom' => $bottom
-            ]),
-            0
-        );
-    
-        // 1️⃣ Basiszustand aus Sensoren
-        $state = WindowStateHelper::Evaluate($top, $bottom);
-    
-        // 2️⃣ Griff einlesen und mappen
-        $handlePosition = null;
-    
-        if ($handleID > 0 && @IPS_VariableExists($handleID)) {
-            $raw = GetValueString($handleID);
-    
-            $this->SendDebug('HandleRaw', $raw, 0);
-    
-            $handlePosition = $this->MapHandlePosition($raw);
-    
-            if ($handlePosition !== null) {
-                $this->SetValue('HandlePosition', $handlePosition);
-            } else {
-                $this->SendDebug('HandleMapping', 'Unbekannter Wert: ' . $raw, 0);
-            }
-        }
-    
-        // 3️⃣ HandleMode berücksichtigen
-        $handleMode = $this->ReadPropertyInteger('HandleMode');
-    
-        if ($handlePosition !== null) {
-    
-            $this->SendDebug('HandleMode', (string)$handleMode, 0);
-            $this->SendDebug('HandlePosition', (string)$handlePosition, 0);
-    
-            switch ($handleMode) {
-    
-                case self::HANDLE_IGNORE:
-                    // Griff komplett ignorieren
-                    break;
-    
-                case self::HANDLE_OVERRIDE:
-                    // Griff bestimmt alles
-                    switch ($handlePosition) {
-                        case 0: // unten
-                            $state = WindowStateHelper::STATE_CLOSED;
-                            break;
-    
-                        case 1: // oben
-                            $state = WindowStateHelper::STATE_TILT;
-                            break;
-    
-                        case 2: // links
-                        case 3: // rechts
-                            $state = WindowStateHelper::STATE_OPEN;
-                            break;
-                    }
-                    $this->SendDebug('HandleOverride', (string)$state, 0);
-                    break;
-    
-                case self::HANDLE_REFINE:
-                    // Sensor ist Basis, Griff verfeinert
-                    switch ($state) {
-    
-                        case WindowStateHelper::STATE_CLOSED:
-                            // bleibt geschlossen
-                            break;
-    
-                        case WindowStateHelper::STATE_TILT:
-                            if ($handlePosition === 2 || $handlePosition === 3) {
-                                $state = WindowStateHelper::STATE_OPEN;
-                                $this->SendDebug('HandleRefine', 'Tilt → Open', 0);
-                            }
-                            break;
-    
-                        case WindowStateHelper::STATE_OPEN:
-                            // bleibt offen
-                            break;
-                    }
-                    break;
-            }
-        }
-    
-        $this->SendDebug('StateResult', (string)$state, 0);
-    
-        // Sonderfall sichtbar machen
-        if (!$top && $bottom) {
-            $this->SendDebug('Warning', 'Ungewöhnlicher Zustand: unten offen, oben zu', 0);
-        }
-    
-        // 4️⃣ Werte setzen
-    
-        // Bool (~Window.Reversed)
-        $this->SetValue('Open', $state === WindowStateHelper::STATE_CLOSED);
-    
-        // State nur im Tilt-Mode
-        if ($this->ReadPropertyInteger('Mode') === self::MODE_TILT) {
-            $this->SetValue('State', $state);
+private function UpdateState(): void
+{
+    $this->SendDebug(__FUNCTION__, 'Start UpdateState', 0);
+
+    $topID = $this->ReadPropertyInteger('SensorTop');
+    $bottomID = $this->ReadPropertyInteger('SensorBottom');
+    $handleID = $this->ReadPropertyInteger('SensorHandle');
+
+    if (!@IPS_VariableExists($topID) || !@IPS_VariableExists($bottomID)) {
+        $this->SendDebug('Error', 'Sensor nicht vorhanden', 0);
+        return;
+    }
+
+    $top = SensorHelper::GetState($topID);
+    $bottom = SensorHelper::GetState($bottomID);
+
+    if ($top === null || $bottom === null) {
+        $this->SendDebug('Error', 'Sensor liefert NULL', 0);
+        return;
+    }
+
+    $this->SendDebug(
+        'SensorValues',
+        json_encode([
+            'TopID' => $topID,
+            'BottomID' => $bottomID,
+            'Top' => $top,
+            'Bottom' => $bottom
+        ]),
+        0
+    );
+
+    // 1️⃣ Basiszustand aus Sensoren
+    $state = WindowStateHelper::Evaluate($top, $bottom);
+
+    // 2️⃣ Griff einlesen und direkt in Zustand mappen
+    $handleState = null;
+
+    if ($handleID > 0 && @IPS_VariableExists($handleID)) {
+        $raw = GetValueString($handleID);
+
+        $this->SendDebug('HandleRaw', $raw, 0);
+
+        $handleState = $this->MapHandlePosition($raw);
+
+        if ($handleState !== null) {
+            $this->SetValue('HandlePosition', $handleState);
+        } else {
+            $this->SendDebug('HandleMapping', 'Unbekannter Wert: ' . $raw, 0);
         }
     }
+
+    // 3️⃣ HandleMode berücksichtigen
+    $handleMode = $this->ReadPropertyInteger('HandleMode');
+
+    if ($handleState !== null) {
+
+        $this->SendDebug('HandleMode', (string)$handleMode, 0);
+        $this->SendDebug('HandleState', (string)$handleState, 0);
+
+        switch ($handleMode) {
+
+            case self::HANDLE_IGNORE:
+                // Griff komplett ignorieren
+                break;
+
+            case self::HANDLE_OVERRIDE:
+                // Griff bestimmt Zustand komplett
+                $state = $handleState;
+                $this->SendDebug('HandleOverride', (string)$state, 0);
+                break;
+
+            case self::HANDLE_REFINE:
+                // Sensor ist Basis, Griff verfeinert sinnvoll
+
+                switch ($state) {
+
+                    case WindowStateHelper::STATE_CLOSED:
+                        // geschlossen bleibt geschlossen
+                        break;
+
+                    case WindowStateHelper::STATE_TILT:
+                        // Griff kann erweitern
+                        if ($handleState === WindowStateHelper::STATE_OPEN) {
+                            $state = WindowStateHelper::STATE_OPEN;
+                            $this->SendDebug('HandleRefine', 'Tilt → Open', 0);
+                        }
+                        break;
+
+                    case WindowStateHelper::STATE_OPEN:
+                        // offen bleibt offen
+                        break;
+                }
+                break;
+        }
+    }
+
+    $this->SendDebug('StateResult', (string)$state, 0);
+
+    // Sonderfall sichtbar machen
+    if (!$top && $bottom) {
+        $this->SendDebug('Warning', 'Ungewöhnlicher Zustand: unten offen, oben zu', 0);
+    }
+
+    // 4️⃣ Werte setzen
+
+    // Bool (~Window.Reversed)
+    $this->SetValue('Open', $state === WindowStateHelper::STATE_CLOSED);
+
+    // State nur im Tilt-Mode
+    if ($this->ReadPropertyInteger('Mode') === self::MODE_TILT) {
+        $this->SetValue('State', $state);
+    }
+}
 
     private function MapHandlePosition(string $value): ?int
     {
