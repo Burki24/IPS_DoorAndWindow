@@ -32,5 +32,15 @@
             "name": "SensorHandle",
             "caption": "Griffposition"
         }
+        {
+            "type": "Select",
+            "name": "HandleMode",
+            "caption": "Griff-Verhalten",
+            "options": [
+                { "caption": "Ignorieren", "value": 0 },
+                { "caption": "Überschreiben", "value": 1 },
+                { "caption": "Verfeinern", "value": 2 }
+            ]
+        }
     ]
 }
