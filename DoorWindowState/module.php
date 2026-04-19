@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../libs/SensorHelper.php';
 require_once __DIR__ . '/../libs/WindowStateHelper.php';
+require_once __DIR__ . '/../libs/VariableHelper.php';
+require_once __DIR__ . '/../libs/VariableProfileHelper.php';
 
 class DoorWindowState extends IPSModuleStrict
 {
