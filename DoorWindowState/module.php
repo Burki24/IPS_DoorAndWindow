@@ -22,12 +22,32 @@ class DoorWindowState extends IPSModuleStrict
         $this->RegisterPropertyInteger('Mode', 0);
         $this->RegisterPropertyInteger('SensorTop', 0);
         $this->RegisterPropertyInteger('SensorBottom', 0);
+        $this->RegisterPropertyInteger('SensorHandle', 0);
     }
 
     public function ApplyChanges(): void
     {
         parent::ApplyChanges();
 
+        $this->MaintainVariable(
+            'HandlePosition',
+            'Griffposition',
+            VARIABLETYPE_INTEGER,
+            'DWS.HandlePosition',
+            2,
+            $this->ReadPropertyInteger('SensorHandle') > 0
+        );
+        
+        // Optional Debug / Rohwert
+        $this->MaintainVariable(
+            'HandleRaw',
+            'Griff Rohwert',
+            VARIABLETYPE_STRING,
+            '',
+            3,
+            false // optional später aktivieren
+        );
+        
         // Profil anlegen (WICHTIG: vor MaintainVariable!)
         $this->RegisterProfiles();
 
@@ -75,6 +95,19 @@ class DoorWindowState extends IPSModuleStrict
                 [2, 'Offen', '', 0xFF0000]
             ]
         );
+        
+        $this->RegisterProfileIntegerEx(
+            'DWS.HandlePosition',
+            'Move',
+            '',
+            '',
+            [
+                [0, 'Unten', '', 0x00FF00],
+                [1, 'Oben', '', 0xFFFF00],
+                [2, 'Links', '', 0x0000FF],
+                [3, 'Rechts', '', 0x0000FF]
+            ]
+        );
     }
 
     private function RegisterSensorMessages(): void
@@ -102,23 +135,24 @@ class DoorWindowState extends IPSModuleStrict
     private function UpdateState(): void
     {
         $this->SendDebug(__FUNCTION__, 'Start UpdateState', 0);
-
+    
         $topID = $this->ReadPropertyInteger('SensorTop');
         $bottomID = $this->ReadPropertyInteger('SensorBottom');
-
+        $handleID = $this->ReadPropertyInteger('SensorHandle');
+    
         if (!@IPS_VariableExists($topID) || !@IPS_VariableExists($bottomID)) {
             $this->SendDebug('Error', 'Sensor nicht vorhanden', 0);
             return;
         }
-
+    
         $top = SensorHelper::GetState($topID);
         $bottom = SensorHelper::GetState($bottomID);
-
+    
         if ($top === null || $bottom === null) {
             $this->SendDebug('Error', 'Sensor liefert NULL', 0);
             return;
         }
-
+    
         $this->SendDebug(
             'SensorValues',
             json_encode([
@@ -129,22 +163,79 @@ class DoorWindowState extends IPSModuleStrict
             ]),
             0
         );
-
+    
+        // Basiszustand aus Sensoren
         $state = WindowStateHelper::Evaluate($top, $bottom);
-
+    
+        // Griff-Logik (optional)
+        $handlePosition = null;
+    
+        if ($handleID > 0 && @IPS_VariableExists($handleID)) {
+            $raw = GetValueString($handleID);
+    
+            $this->SendDebug('HandleRaw', $raw, 0);
+    
+            $handlePosition = $this->MapHandlePosition($raw);
+    
+            if ($handlePosition !== null) {
+                $this->SetValue('HandlePosition', $handlePosition);
+    
+                // Griff überschreibt Zustand
+                switch ($handlePosition) {
+                    case 0: // unten
+                        $state = WindowStateHelper::STATE_CLOSED;
+                        break;
+    
+                    case 1: // oben
+                        $state = WindowStateHelper::STATE_TILT;
+                        break;
+    
+                    case 2: // links
+                    case 3: // rechts
+                        $state = WindowStateHelper::STATE_OPEN;
+                        break;
+                }
+    
+                $this->SendDebug('HandleOverride', (string)$state, 0);
+            } else {
+                $this->SendDebug('HandleMapping', 'Unbekannter Wert: ' . $raw, 0);
+            }
+        }
+    
         $this->SendDebug('StateResult', (string)$state, 0);
-
+    
         // Sonderfall sichtbar machen
         if (!$top && $bottom) {
             $this->SendDebug('Warning', 'Ungewöhnlicher Zustand: unten offen, oben zu', 0);
         }
-
+    
         // Bool immer setzen (~Window.Reversed)
         $this->SetValue('Open', $state === WindowStateHelper::STATE_CLOSED);
-
+    
         // State nur im Tilt-Mode
         if ($this->ReadPropertyInteger('Mode') === self::MODE_TILT) {
             $this->SetValue('State', $state);
         }
+    }
+
+    private function MapHandlePosition(string $value): ?int
+    {
+        $map = [
+            'down' => 0,
+            'runter' => 0,
+    
+            'up' => 1,
+            'rauf' => 1,
+    
+            'left' => 2,
+            'links' => 2,
+    
+            'right' => 3,
+            'rechts' => 3
+        ];
+    
+        $key = strtolower(trim($value));
+    
+        return $map[$key] ?? null;
     }
 }
