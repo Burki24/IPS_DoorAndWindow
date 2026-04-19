@@ -9,6 +9,9 @@ require_once __DIR__ . '/../libs/VariableProfileHelper.php';
 
 class DoorWindowState extends IPSModuleStrict
 {
+    use VariableHelper;
+    use VariableProfileHelper;
+    
     // Modes
     private const MODE_BINARY = 0;
     private const MODE_TILT   = 1;
