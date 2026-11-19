@@ -8,7 +8,15 @@ Symcon Modul zur intelligenten Ermittlung des Fenster- und Türstatus basierend 
 ![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
+[![PayPal.Me](https://img.shields.io/badge/PayPal-Me-lightblue.svg)](#spenden)
+
 Folgende Module beinhaltet das DoorAndWindow Repository:
 
 - __DoorWindowState__ ([Dokumentation](DoorWindowState))  
 	Kurze Beschreibung des Moduls.
+
+## Spenden
+
+Mit einer freiwilligen Spende kannst du die Weiterentwicklung dieses Projekts unterstützen.
+
+[![PayPal.Me](https://img.shields.io/badge/PayPal-Me-lightblue.svg)](https://www.paypal.me/BurkhardKneiseler)
